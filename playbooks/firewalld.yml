@@ -1,0 +1,30 @@
+---
+- name: Configure firewalld rules for common services
+  hosts: all
+  become: true
+
+  vars:
+    firewall_services:
+      - ssh
+      - http
+      - https
+
+  tasks:
+    - name: Ensure firewalld is installed
+      ansible.builtin.dnf:
+        name: firewalld
+        state: present
+
+    - name: Ensure firewalld is enabled and running
+      ansible.builtin.service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Allow common services through the firewall
+      ansible.posix.firewalld:
+        service: "{{ item }}"
+        permanent: true
+        state: enabled
+        immediate: true
+      loop: "{{ firewall_services }}"
