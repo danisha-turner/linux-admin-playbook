@@ -1,0 +1,27 @@
+---
+- name: Manage local users and groups
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Ensure admin group exists
+      ansible.builtin.group:
+        name: admin
+        state: present
+
+    - name: Create admin user
+      ansible.builtin.user:
+        name: labadmin
+        groups: admin
+        append: true
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+    - name: Allow admin group sudo access
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/admin
+        content: "%admin ALL=(ALL) ALL\n"
+        owner: root
+        group: root
+        mode: "0440"
