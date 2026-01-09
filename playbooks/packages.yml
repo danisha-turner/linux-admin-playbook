@@ -1,1 +1,15 @@
+---
+- name: Install baseline packages
+  hosts: all
+  become: true
 
+  tasks:
+    - name: Install common administration packages
+      ansible.builtin.dnf:
+        name:
+          - vim
+          - curl
+          - wget
+          - net-tools
+          - chrony
+        state: present
